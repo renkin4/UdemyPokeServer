@@ -4,6 +4,7 @@ var fs = Npm.require("fs");
 
 Meteor.startup(() => 
 {
+
   // code to run on server at startup
   console.log("Our Meteor Server has Started");
 });
@@ -18,24 +19,37 @@ Meteor.methods({
       return;
     }    
 
+    console.log("Adding pokemon on Meteor ...");
     var range = 0.035;
     var range1 = Math.random() > 0.5 ? range : -range;
     var range2 = Math.random() > 0.5 ? range : -range;
-    var long = loc.longtitude;
+    var long = loc.longitude;
 
     long += Math.random() * (range1);
 
     var lat = loc.latitude;
     lat += Math.random() * (range2);
 
-    var iconPath = process.env.PWD + "./public";
-    var icons = fs.readdirSyn(iconPath);
+    var iconPath = "../../../../../public";
+    var icons = fs.readdirSync(iconPath);
 
     var min = Math.ceil(0);
     var max = Math.ceil(250);
 
     var random = Math.floor(Math.random() * (max-min)) + min;
 
-    return Pokemon.insert({image : icons[random], longtitude : long, latitude : lat});
+    return Pokemon.insert({image : icons[random], longitude : long, latitude : lat});
+  },
+
+  "pokemon.subtract" : function(x)
+  {
+    var user = this.userId;
+    if(!user)
+    {
+      console.log("User not signed in");
+      return;
+    }    
+
+    return Pokemon.remove(x);
   }
 });
